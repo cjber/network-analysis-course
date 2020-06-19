@@ -16,7 +16,28 @@ plot(g)
 ```
 
 # Group 2
+library(igraph)
+library(network)
+library(tidyverse)
+library(ggnetwork)
 
+nodes <- read.csv("./data/congress-twitter-network-nodes.csv")
+edges <- read.csv("./data/congress-twitter-network-edges.csv")
+
+g <- ggnetwork(
+    graph_from_data_frame(d = edges, vertices = nodes, directed = TRUE)
+)
+isolated <- which(degree(g) == 0)
+g2 <- delete.vertices(g, isolated)
+
+g <- g[g$y < 0.3, ]
+
+ggplot(fortify(g), aes(x, y,
+    xend = xend, yend = yend
+)) +
+    geom_edges(alpha = 0.2) +
+    geom_nodes(aes(colour = party, size = followers_count)) +
+    theme_blank()
 
 # Group 3
 
